@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Quản lý người dùng{% endblock %}
+{% block page_title %}Quản lý người dùng{% endblock %}
+
+{% block topbar_extra %}
+  <span class="badge badge-blue">{{ users|length }} tài khoản</span>
+{% endblock %}
+
+{% block content %}
+<table>
+  <thead>
+    <tr>
+      <th>Tên đăng nhập</th>
+      <th>Họ và tên</th>
+      <th>Email</th>
+      <th>Ngày tạo</th>
+      <th>Vai trò</th>
+      <th style="width:120px;"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in users %}
+    {% set role_badge = {"admin": "badge-purple", "seller": "badge-blue", "buyer": "badge-green"} %}
+    <tr>
+      <td><b>{{ u.username }}</b></td>
+      <td>{{ u.full_name or "—" }}</td>
+      <td style="color:#888;">{{ u.email or "—" }}</td>
+      <td style="color:#888;">{{ u.created_at[:10] }}</td>
+      <td><span class="badge {{ role_badge.get(u.role, 'badge-gray') }}">{{ u.role }}</span></td>
+      <td>
+        {% if u.id != session.user_id %}
+          {% set next_role = {"admin": "buyer", "seller": "admin", "buyer": "seller"} %}
+          <a href="{{ url_for('admin_change_role', uid=u.id, new_role=next_role.get(u.role, 'buyer')) }}"
+             class="btn btn-gray btn-sm"
+             onclick="return confirm('Đổi quyền thành \'{{ next_role.get(u.role) }}\'?')">
+            → {{ next_role.get(u.role, "buyer") }}
+          </a>
+        {% else %}
+          <span style="color:#bbb;font-size:12px;">(bạn)</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

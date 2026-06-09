@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Tạo phiên đấu giá{% endblock %}
+{% block page_title %}Tạo phiên đấu giá mới{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:720px;">
+  <form method="POST">
+    <div class="form-group">
+      <label class="form-label">Tên sản phẩm *</label>
+      <input type="text" name="title" placeholder="Nhập tên sản phẩm..." required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Mô tả sản phẩm</label>
+      <textarea name="description" rows="3" placeholder="Mô tả chi tiết sản phẩm..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Danh mục *</label>
+      <select name="category" required>
+        {% for cat in categories %}
+          <option value="{{ cat }}">{{ cat }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Giá khởi điểm (đ) *</label>
+        <input type="number" name="start_price" placeholder="VD: 10000000" min="1" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bước giá (đ) *</label>
+        <input type="number" name="step_price" placeholder="VD: 500000" min="1" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Giá mua đứt (đ)</label>
+        <input type="number" name="buy_now_price" placeholder="Tùy chọn" min="1">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Ngày/giờ bắt đầu *</label>
+        <input type="datetime-local" name="start_time" required
+               oninput="syncDatetime(this, 'start_time_hidden')" id="start_dt">
+        <input type="hidden" name="start_time" id="start_time_hidden">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ngày/giờ kết thúc *</label>
+        <input type="datetime-local" name="end_time" required
+               oninput="syncDatetime(this, 'end_time_hidden')" id="end_dt">
+        <input type="hidden" name="end_time" id="end_time_hidden">
+      </div>
+    </div>
+
+    <button class="btn btn-green" type="submit" style="width:100%;padding:13px;font-size:15px;border-radius:10px;">
+      🚀 Đăng phiên đấu giá
+    </button>
+  </form>
+</div>
+
+<script>
+  function syncDatetime(input, hiddenId) {
+    const val = input.value;
+    if (val) {
+      document.getElementById(hiddenId).value = val.replace("T", " ");
+    }
+  }
+  document.querySelector("form").addEventListener("submit", function() {
+    syncDatetime(document.getElementById("start_dt"), "start_time_hidden");
+    syncDatetime(document.getElementById("end_dt"),   "end_time_hidden");
+  });
+</script>
+{% endblock %}

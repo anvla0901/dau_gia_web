@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Quản lý phiên đấu giá{% endblock %}
+{% block page_title %}Quản lý phiên đấu giá của tôi{% endblock %}
+
+{% block content %}
+{% set status_badge = {"pending": "badge-orange", "active": "badge-green", "completed": "badge-blue", "rejected": "badge-red", "failed": "badge-gray"} %}
+
+{% if not products %}
+  <div class="card" style="text-align:center;padding:60px;color:#888;">
+    Bạn chưa có phiên đấu giá nào.
+  </div>
+{% else %}
+  {% for p in products %}
+  <div class="card">
+    <div class="card-row" style="margin-bottom:8px;">
+      <div style="flex:1;">
+        <div class="card-title">{{ p.title }}</div>
+      </div>
+      <span class="badge {{ status_badge.get(p.status, 'badge-gray') }}">{{ fmt_status(p.status) }}</span>
+    </div>
+
+    <div class="card-sub">
+      Danh mục: <b>{{ p.category_name }}</b> &nbsp;•&nbsp;
+      Giá KĐ: <b>{{ fmt_price(p.start_price) }}</b> &nbsp;•&nbsp;
+      Bước giá: <b>{{ fmt_price(p.step_price) }}</b>
+      {% if p.buy_now_price %} &nbsp;•&nbsp; Mua đứt: <b>{{ fmt_price(p.buy_now_price) }}</b>{% endif %}
+    </div>
+    <div class="card-sub">{{ p.start_time }} → {{ p.end_time }}</div>
+
+    {% set bids = bids_map[p.id] %}
+    <details style="margin-top:10px;background:#f7f7f7;border-radius:8px;padding:8px 14px;">
+      <summary>▶ Danh sách người trả giá ({{ bids|length }})</summary>
+      <div class="bid-list">
+        {% if not bids %}
+          <div class="bid-item" style="color:#aaa;">Chưa có ai trả giá.</div>
+        {% else %}
+          {% for b in bids %}
+          <div class="bid-item {% if loop.first %}top{% endif %}">
+            {% if loop.first %}🥇{% else %}{{ loop.index }}.{% endif %}
+            {{ b.bidder_name }} — {{ fmt_price(b.amount) }} ({{ b.created_at }})
+          </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </details>
+  </div>
+  {% endfor %}
+{% endif %}
+{% endblock %}

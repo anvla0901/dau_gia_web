@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Sản phẩm đấu giá{% endblock %}
+{% block page_title %}Sản phẩm đang đấu giá{% endblock %}
+
+{% block topbar_extra %}
+  <span class="badge badge-green">{{ products|length }} sản phẩm</span>
+{% endblock %}
+
+{% block content %}
+{% if not products %}
+  <div class="card" style="text-align:center;padding:60px;color:#888;">
+    Chưa có sản phẩm nào đang đấu giá.
+  </div>
+{% else %}
+  {% for p in products %}
+  {% set bids = bids_map[p.id] %}
+  <div class="card">
+    <div class="card-row" style="align-items:flex-start;gap:20px;">
+
+      <div style="flex:1;">
+        <div style="margin-bottom:6px;">
+          <span class="badge badge-green" style="font-size:11px;">{{ p.category_name }}</span>
+        </div>
+        <div class="card-title" style="font-size:15px;margin-bottom:6px;">{{ p.title }}</div>
+
+        <div class="price-big">Giá hiện tại: {{ fmt_price(p.current_price) }}</div>
+        <div class="card-sub" style="margin-top:4px;">
+          Bước giá: <b>{{ fmt_price(p.step_price) }}</b> &nbsp;•&nbsp;
+          Số lượt đặt: <b>{{ bids|length }}</b>
+        </div>
+        {% if p.buy_now_price %}
+        <div class="card-sub" style="color:#e67e22;">
+          Giá mua đứt: <b>{{ fmt_price(p.buy_now_price) }}</b>
+        </div>
+        {% endif %}
+        <div class="card-sub">Kết thúc: {{ p.end_time }}</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;min-width:130px;">
+        <button class="btn btn-green"
+                onclick="document.getElementById('bid-form-{{ p.id }}').style.display='block';this.style.display='none'">
+          💰 Đặt giá
+        </button>
+      </div>
+    </div>
+
+    <div id="bid-form-{{ p.id }}" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid #f0ede6;">
+      <form method="POST" action="{{ url_for('bidder_place_bid', pid=p.id) }}"
+            style="display:flex;gap:10px;align-items:flex-end;">
+        <div style="flex:1;">
+          <label class="form-label">
+            Giá đặt (tối thiểu {{ fmt_price(p.current_price + p.step_price) }})
+          </label>
+          <input type="number" name="amount"
+                 min="{{ (p.current_price + p.step_price)|int }}"
+                 placeholder="{{ (p.current_price + p.step_price)|int }}" required>
+        </div>
+        <button class="btn btn-green" type="submit">Xác nhận</button>
+        <button type="button" class="btn btn-gray"
+                onclick="document.getElementById('bid-form-{{ p.id }}').style.display='none'">
+          Hủy
+        </button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}
+{% endblock %}

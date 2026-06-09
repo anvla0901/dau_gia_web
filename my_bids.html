@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Lịch sử đặt giá{% endblock %}
+{% block page_title %}Lịch sử đặt giá của tôi{% endblock %}
+
+{% block content %}
+{% if not records %}
+  <div class="card" style="text-align:center;padding:60px;color:#888;">
+    Bạn chưa tham gia đặt giá sản phẩm nào.
+  </div>
+{% else %}
+  <table>
+    <thead>
+      <tr>
+        <th>Sản phẩm</th>
+        <th>Giá đặt</th>
+        <th>Giá hiện tại</th>
+        <th>Thời gian</th>
+        <th>Trạng thái</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      {% set is_highest = (r.amount == r.current_price) %}
+      <tr>
+        <td><b>{{ r.product_title }}</b></td>
+        <td><b>{{ fmt_price(r.amount) }}</b></td>
+        <td style="color:#888;">{{ fmt_price(r.current_price) }}</td>
+        <td style="color:#888;font-size:12px;">{{ r.created_at }}</td>
+        <td>
+          {% if is_highest %}
+            <span class="badge badge-green">Cao nhất</span>
+          {% else %}
+            <span class="badge badge-red">Đã bị vượt</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+{% endblock %}

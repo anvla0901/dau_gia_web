@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Duyệt sản phẩm{% endblock %}
+{% block page_title %}Duyệt sản phẩm đăng bán{% endblock %}
+
+{% block topbar_extra %}
+  <span class="badge {% if products %}badge-orange{% else %}badge-green{% endif %}">
+    {{ products|length }} chờ duyệt
+  </span>
+{% endblock %}
+
+{% block content %}
+<p style="color:#888;font-size:13px;margin-bottom:16px;">
+  Xem xét và phê duyệt sản phẩm của Seller trước khi hiển thị lên sàn.
+</p>
+
+{% if not products %}
+  <div class="card" style="text-align:center;padding:60px;color:#27ae60;font-size:15px;">
+    ✅ Không còn sản phẩm nào đang chờ duyệt.
+  </div>
+{% else %}
+  {% for p in products %}
+  <div class="card">
+    <div class="card-row">
+      <div style="flex:1;">
+        <span class="badge badge-green" style="font-size:11px;margin-bottom:6px;">{{ p.category_name }}</span>
+        <div class="card-title">{{ p.title }}</div>
+        <div class="card-sub">
+          Người bán: <b>{{ p.seller_name }}</b> &nbsp;•&nbsp;
+          Giá KĐ: <b>{{ fmt_price(p.start_price) }}</b> &nbsp;•&nbsp;
+          Bước giá: <b>{{ fmt_price(p.step_price) }}</b>
+          {% if p.buy_now_price %} &nbsp;•&nbsp; Mua đứt: <b>{{ fmt_price(p.buy_now_price) }}</b>{% endif %}
+        </div>
+        <div class="card-sub">{{ p.start_time }} → {{ p.end_time }}</div>
+        {% if p.description %}
+          <div class="card-sub" style="margin-top:4px;font-style:italic;">{{ p.description }}</div>
+        {% endif %}
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0;">
+        <a href="{{ url_for('admin_approve', pid=p.id) }}" class="btn btn-green btn-sm">✓ Duyệt</a>
+        <a href="{{ url_for('admin_reject',  pid=p.id) }}" class="btn btn-red btn-sm"
+           onclick="return confirm('Từ chối \'{{ p.title }}\'?')">✗ Từ chối</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Đăng ký — AuctionHUMG{% endblock %}
+
+{% block auth_content %}
+<style>
+  body { background: #34a853; display: flex; align-items: center; justify-content: center; }
+  .reg-card {
+    background: #f5f2eb;
+    border-radius: 20px;
+    width: 440px;
+    padding: 36px 40px 28px;
+    text-align: center;
+  }
+  .brand { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 6px; }
+  .title { font-size: 26px; font-weight: bold; margin-bottom: 22px; }
+  .reg-card input, .reg-card select { margin-bottom: 12px; text-align: left; }
+  .admin-box {
+    background: #fdebd0;
+    border: 1px solid #e67e22;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    display: none;
+    text-align: left;
+  }
+  .admin-box input { margin-bottom: 0; background: white; }
+  .admin-hint { font-size: 11px; color: #e67e22; margin-top: 5px; }
+  .btn-reg {
+    width: 100%; padding: 12px; border-radius: 10px;
+    background: #2d6a4f; color: white;
+    font-size: 15px; font-weight: bold; border: none;
+    cursor: pointer; margin-top: 4px;
+  }
+  .btn-reg:hover { background: #1b4332; }
+  .link-login { margin-top: 12px; font-size: 13px; color: #888; }
+  .link-login a { color: #2d6a4f; font-weight: bold; }
+</style>
+
+<div class="reg-card">
+  <div class="brand">◇ AUCTIONHUMG</div>
+  <div class="title">Tạo tài khoản mới</div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div style="background:#fde8e8;color:#7b241c;padding:9px 14px;border-radius:8px;margin-bottom:12px;font-size:13px;">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST">
+    <input type="text"     name="username"         placeholder="Tên đăng nhập *"    required>
+    <input type="password" name="password"         placeholder="Mật khẩu *"         required>
+    <input type="password" name="confirm_password" placeholder="Nhập lại mật khẩu *" required>
+    <input type="email"    name="email"            placeholder="Email">
+    <input type="text"     name="full_name"        placeholder="Họ và tên">
+
+    <select name="role" id="role-select">
+      <option value="buyer">buyer — Người mua</option>
+      <option value="seller">seller — Người bán</option>
+      <option value="admin">admin — Quản trị viên</option>
+    </select>
+
+    <button class="btn-reg" type="submit">Đăng ký</button>
+  </form>
+
+  <div class="link-login">
+    Đã có tài khoản? <a href="{{ url_for('login') }}">Đăng nhập ngay</a>
+  </div>
+</div>
+
+{% endblock %}

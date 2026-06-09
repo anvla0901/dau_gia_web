@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Đăng nhập — AuctionHUMG{% endblock %}
+
+{% block auth_content %}
+<style>
+  body { background: #34a853; display: flex; align-items: center; justify-content: center; }
+  .login-card {
+    background: #f5f2eb;
+    border-radius: 20px;
+    width: 400px;
+    padding: 40px 40px 32px;
+    text-align: center;
+  }
+  .brand { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 6px; }
+  .title { font-size: 28px; font-weight: bold; margin-bottom: 28px; }
+  .login-card input { margin-bottom: 14px; }
+  .btn-login {
+    width: 100%; padding: 13px; border-radius: 10px;
+    background: #529467; color: white;
+    font-size: 15px; font-weight: bold; border: none;
+    cursor: pointer; margin-top: 6px;
+  }
+  .btn-login:hover { background: #3e734f; }
+  .link-reg { margin-top: 14px; font-size: 13px; color: #888; }
+  .link-reg a { color: #2d6a4f; font-weight: bold; }
+</style>
+
+<div class="login-card">
+  <div class="brand">◇ AUCTIONHUMG</div>
+  <div class="title">Đăng nhập</div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div style="background:#fde8e8;color:#7b241c;padding:9px 14px;border-radius:8px;margin-bottom:12px;font-size:13px;">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST">
+    <input type="text"     name="username" placeholder="Tên đăng nhập" required>
+    <input type="password" name="password" placeholder="Mật khẩu"      required>
+    <button class="btn-login" type="submit">Đăng nhập</button>
+  </form>
+
+  <div class="link-reg">
+    Chưa có tài khoản? <a href="{{ url_for('register') }}">Đăng ký ngay</a>
+  </div>
+</div>
+{% endblock %}
